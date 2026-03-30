@@ -1,3 +1,5 @@
+from bson import ObjectId
+
 from .models import Product
 from product_category.models import ProductCategory
 
@@ -13,6 +15,20 @@ class ProductRepository:
     def get_all():
         return Product.objects()
     
+    @staticmethod
+    def update(product_id, data):
+        product = Product.objects(id=product_id).first()
+        if product:
+            for key, value in data.items():
+                setattr(product, key, value)
+            if "category" in data and data["category"]:
+                category = ProductCategory.objects.get(
+                    id=ObjectId(data["category"])
+                )
+                product.category = category    
+            product.save()
+        return product
+
     @staticmethod
     def get_all_by_category_id(category_id):
         return Product.objects(category=category_id)

@@ -34,7 +34,9 @@ def list_products(request):
             "name": p.name,
             "description": p.description,
             "price": p.price,
-            "category": cat_id
+            "category": cat_id,
+            "brand": p.brand,
+            "quantity": p.quantity
         })
 
     return JsonResponse(response_data, safe=False)
@@ -51,10 +53,35 @@ def get_product(request, product_id):
             "name": product.name,
             "description" : product.description,
             "price" : product.price,
+            "brand": product.brand,
+            "quantity":product.quantity,
             "category": cat_id
         })
     except ValueError as er:
         return JsonResponse({"error" : str(er)}, status=404)
+
+@csrf_exempt
+def update_product(request, product_id):
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        try:
+            product = ProductServices.update_product(product_id, data)
+            raw_category = product._data.get('category')
+       
+            cat_id = str(raw_category.id) if raw_category else None
+            return JsonResponse({
+                "id": str(product.id),
+                "name": product.name,
+                "brand": product.brand,
+                "description": product.description,
+                "price": product.price,
+                "quantity": product.quantity,
+                "category": cat_id
+            })
+        except ValueError as er:
+            return JsonResponse({"error" : str(er)}, status=400)
+    else:
+        return JsonResponse({"error" : "PUT method not used"}, status=400)
 
 @csrf_exempt
 def list_products_by_category_id(request, category_id):
@@ -66,7 +93,10 @@ def list_products_by_category_id(request, category_id):
                 "id": str(p.id),
                 "name": p.name,
                 "description": p.description,
-                "price": p.price
+                "price": p.price,
+                "brand" : p.brand,  
+                "quantity": p.quantity,
+                "category": str(p.category.id),
             }
             for p in products
         ], safe=False)

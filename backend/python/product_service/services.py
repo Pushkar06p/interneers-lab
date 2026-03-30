@@ -4,7 +4,7 @@ class ProductServices():
     
     @staticmethod
     def create_product(data):
-        if data.get("price", 0) <= 0:
+        if float(data.get("price", 0)) <= 0:
             raise ValueError("Given Price is not valid")
         
         return ProductRepository.create(data)
@@ -16,6 +16,18 @@ class ProductServices():
     @staticmethod
     def get_product(product_id):
         product = ProductRepository.get_by_id(product_id)
+
+        if not product:
+            raise ValueError("Product not found")
+        
+        return product
+    
+    @staticmethod
+    def update_product(product_id, data):
+        if float(data.get("price", 0)) <= 0:
+            raise ValueError("Given Price is not valid")
+        data["price"] = float(data["price"])
+        product = ProductRepository.update(product_id, data)
 
         if not product:
             raise ValueError("Product not found")
