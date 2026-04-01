@@ -15,16 +15,79 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { categories } = useCategories();
+
   const [categoryName, setCategoryName] = useState<string>("No Category");
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    if (product.category) {
-      getCategoryById(product.category).then((category) => {
+    const fetchCategory = async () => {
+      if (!product.category) {
+        setCategoryName("No Category");
+        return;
+      }
+
+      try {
+        const category = await getCategoryById(product.category);
         setCategoryName(category.name);
-      });
-    } else {
-      setCategoryName("No Category");
-    }
+      } catch {
+        setCategoryName("Unknown Category");
+      }
+    };
+
+    fetchCategory();
   }, [product.category]);
+
+  const handleAddCategory = async (categoryId: string) => {
+    try {
+      setLoading(true);
+      await addCategoryToProduct(product.id, categoryId);
+
+      const category = categories.find((c) => c.id === categoryId);
+      setCategoryName(category?.name || "Category Added");
+      product.category = categoryId;
+      alert("Category added successfully.");
+    } catch (error) {
+      alert("Failed to add category.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemoveCategory = async () => {
+    if (!product.category) return;
+
+    try {
+      setLoading(true);
+      await removeCategoryFromProduct(product.id);
+
+      setCategoryName("No Category");
+      product.category = "";
+      alert("Category removed successfully.");
+    } catch {
+      alert("Failed to remove category.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?",
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      setLoading(true);
+      await deleteProduct(product.id);
+      alert("Product deleted successfully.");
+    } catch {
+      alert("Failed to delete product.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
       style={{
@@ -33,42 +96,23 @@ const ProductCard = ({ product }: ProductCardProps) => {
         marginBottom: "12px",
       }}
     >
-      <h3>{product.name}</h3>
+      <h2>{product.name}</h2>
       <p>Brand: {product.brand}</p>
-      <p>Price: Rs. {product.price}</p>
-      <p>Qunatity: {product.quantity}</p>
-      <div
-        style={{
-          display: "flex",
-          gap: "18px",
-          paddingTop: "0px",
-        }}
-      >
+      <p>Price: ₹{product.price}</p>
+      <p>Quantity: {product.quantity}</p>
+      {/* CATEGORY SECTION */}
+      <div style={{ display: "flex", gap: "18px" }}>
         <p>Category: {categoryName}</p>
+
         {product.category ? (
-          <button
-            onClick={() => {
-              removeCategoryFromProduct(product.id).then(() => {
-                alert("Category removed successfully");
-                window.location.reload();
-              });
-            }}
-          >
+          <button onClick={handleRemoveCategory} disabled={loading}>
             Remove Category
           </button>
         ) : (
           <select
-            name="category"
-            value={product.category || ""}
-            onChange={(e) => {
-              const selectedCategory = e.target.value;
-              if (selectedCategory) {
-                addCategoryToProduct(product.id, selectedCategory).then(() => {
-                  alert("Category added successfully");
-                  window.location.reload();
-                });
-              }
-            }}
+            onChange={(e) => handleAddCategory(e.target.value)}
+            defaultValue=""
+            disabled={loading}
           >
             <option value="">Select Category</option>
 
@@ -80,21 +124,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </select>
         )}
       </div>
-      <div
-        style={{
-          display: "flex",
-          gap: "18px",
-        }}
-      >
+      {/* ACTION BUTTONS */}
+      <div style={{ display: "flex", gap: "18px", marginTop: "10px" }}>
         <Link to={`/products/${product.id}`}>Edit Product</Link>
-        <button
-          onClick={() => {
-            deleteProduct(product.id).then(() => {
-              alert("Product deleted successfully");
-              window.location.reload();
-            });
-          }}
-        >
+
+        <button onClick={handleDelete} disabled={loading}>
           Delete Product
         </button>
       </div>

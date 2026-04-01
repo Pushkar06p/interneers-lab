@@ -60,7 +60,7 @@ def seeded_products(seeded_categories):
         quantity=40
     ).save()
 
-    return [p1.id, p2.id]
+    return [str(p1.id), str(p2.id)]
 
 
    

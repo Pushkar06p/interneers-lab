@@ -68,6 +68,9 @@ class ProductService:
             raise InvalidProductId(product_id=product_id)
 
     def _validate_category(self, category_id):
+        
+        if not category_id:
+            return
 
         if not ObjectId.is_valid(category_id):
             raise InvalidCategoryId(category_id=category_id)
