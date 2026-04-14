@@ -13,10 +13,13 @@ const ProductCreationPage = () => {
       const { id, ...productData } = product;
 
       await createProduct(productData);
+
       alert("Product created successfully");
-      navigate(`/`);
-    } catch {
-      setError("Creation failed");
+      navigate("/");
+    } catch (err: any) {
+      const message = err?.error || "Failed to create product";
+
+      setError(message);
     }
   };
   if (error) return <ErrorMessage message={error} />;

@@ -20,6 +20,7 @@ const ProductList = ({ products }: ProductListProps) => {
           style={{
             backgroundColor: "lightsteelblue",
           }}
+          key={product.id}
         >
           <ProductCard key={product.id} product={product} />
         </div>

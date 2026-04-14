@@ -1,8 +1,38 @@
 import api from "../api/axiosConfig";
 import { Product } from "../types/product";
 
-export const getProducts = async (): Promise<Product[]> => {
-  const response = await api.get("/products/");
+export interface ProductResponse {
+  count: number;
+  current: number;
+  next: string | null;
+  previous: string | null;
+  results: Product[];
+}
+export interface ProductFilters {
+  page?: number;
+  name?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  category?: string[];
+  brand?: string;
+  sort_by?: string;
+}
+
+export const getProducts = async (
+  filters: ProductFilters = {},
+): Promise<ProductResponse> => {
+  const response = await api.get("/products/", {
+    params: {
+      page: filters.page,
+      name: filters.name,
+      min_price: filters.minPrice,
+      max_price: filters.maxPrice,
+      category: filters.category,
+      brand: filters.brand,
+      sort_by: filters.sort_by,
+    },
+  });
+
   return response.data.products;
 };
 
@@ -20,9 +50,17 @@ export const updateProduct = async (
   return response.data;
 };
 
-export const createProduct = async (product: Product): Promise<Product> => {
-  const response = await api.post(`/products/`, product);
-  return response.data;
+export const createProduct = async (product: Product) => {
+  try {
+    const response = await api.post("/products/", product);
+    return response.data;
+  } catch (error: any) {
+    throw (
+      error.response?.data || {
+        error: "Something went wrong",
+      }
+    );
+  }
 };
 
 export const deleteProduct = async (id: string | undefined): Promise<void> => {

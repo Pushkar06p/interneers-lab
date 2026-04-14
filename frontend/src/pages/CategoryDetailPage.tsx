@@ -5,6 +5,7 @@ import { getCategoryById, updateCategory } from "../services/categoryService";
 import Loader from "../components/common/Loader";
 import ErrorMessage from "../components/common/ErrorMessage";
 import CategoryForm from "../components/category/CategoryForm";
+import { ROUTES } from "routes/routePath";
 
 const CategoryDetailPage = () => {
   const { id } = useParams();
@@ -32,7 +33,7 @@ const CategoryDetailPage = () => {
     try {
       await updateCategory(id, updatedCategory);
       alert("Catgeory updated successfully");
-      navigate(`/categories`);
+      navigate(ROUTES.CATEGORIES);
     } catch {
       setError("Update failed");
     }

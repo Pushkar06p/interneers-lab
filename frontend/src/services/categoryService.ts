@@ -1,8 +1,27 @@
 import api from "../api/axiosConfig";
 import { Category } from "../types/category";
 
-export const getCategories = async (): Promise<Category[]> => {
-  const response = await api.get("/categories/");
+export interface CategoryResponse {
+  count: number;
+  current: number;
+  next: string | null;
+  previous: string | null;
+  results: Category[];
+}
+
+export const getCategories = async (
+  page?: number,
+  name?: string,
+  sort_by?: string,
+): Promise<CategoryResponse> => {
+  const response = await api.get("/categories/", {
+    params: {
+      page,
+      name,
+      sort_by,
+    },
+  });
+
   return response.data.categories;
 };
 

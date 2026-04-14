@@ -17,7 +17,7 @@ const ProductForm = ({ product, onSubmit }: ProductFormProps) => {
     quantity: product?.quantity || 0,
     description: product?.description || "",
   });
-  const { categories } = useCategories();
+  const { categories } = useCategories(undefined);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prev) => ({

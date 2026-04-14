@@ -4,8 +4,9 @@ import { Category } from "types/category";
 import { createCategory } from "../services/categoryService";
 import ErrorMessage from "components/common/ErrorMessage";
 import CategoryForm from "components/category/CategoryForm";
+import { ROUTES } from "routes/routePath";
 
-const CategoryCreateionPage = () => {
+const CategoryCreationPage = () => {
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
   const handleCreate = async (category: Category) => {
@@ -14,7 +15,7 @@ const CategoryCreateionPage = () => {
 
       await createCategory(categoryData);
       alert("Category created successfully");
-      navigate(`/categories`);
+      navigate(ROUTES.CATEGORIES);
     } catch {
       setError("Creation failed");
     }
@@ -28,4 +29,4 @@ const CategoryCreateionPage = () => {
   );
 };
 
-export default CategoryCreateionPage;
+export default CategoryCreationPage;

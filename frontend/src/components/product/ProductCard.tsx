@@ -14,7 +14,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const { categories } = useCategories();
+  const { categories } = useCategories(undefined);
 
   const [categoryName, setCategoryName] = useState<string>("No Category");
   const [loading, setLoading] = useState(false);
