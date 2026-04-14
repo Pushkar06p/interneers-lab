@@ -1,5 +1,6 @@
 import json
-
+from dataclasses import dataclass
+from typing import Optional
 from rest_framework.decorators import api_view
 from ..services.product_service import ProductService
 from ..services.category_service import CategoryService
@@ -7,17 +8,36 @@ from ..serializers import *
 from ..exceptions import *
 from ..validators import *
 from ..responses import *
+from ..pagination import paginate_products
 
 product_service = ProductService()
 category_service = CategoryService()
+
+@dataclass
+class GetProductRequest:
+    name: Optional[str] = None
+    min_price: Optional[str] = None
+    max_price: Optional[str] = None
+    brand: Optional[str] = None
+    category: Optional[str] = None
+
 @api_view(["GET", "POST"])
 def products(request):
 
     if request.method == "GET":
         sort_by=request.GET.get("sort_by","-updated_at")
-        products = product_service.list_products(sort_by)
-        serialized_products = [serialize_product(product) for product in products]
-        return success_response("products",serialized_products, 200)
+        filters = GetProductRequest(                
+                name = request.GET.get('name', None),
+                min_price = request.GET.get('min_price', None),
+                max_price = request.GET.get('max_price', None),
+                brand = request.GET.get('brand', None).split(',') if request.GET.get('brand', None) else None,
+                category = request.GET.get('category', None).split(',') if request.GET.get('category', None) else None
+            )
+        page = request.GET.get("page", 1)   
+        sorted_products = product_service.list_products(sort_by, filters)
+        products=paginate_products(request, sorted_products, page)
+        
+        return success_response("products", products, 200)
     
     elif request.method == "POST":
         try:

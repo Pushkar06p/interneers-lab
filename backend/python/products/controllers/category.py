@@ -1,5 +1,6 @@
 import json
-
+from dataclasses import dataclass
+from typing import Optional
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from ..services.product_service import ProductService
@@ -8,17 +9,29 @@ from ..serializers import *
 from ..exceptions import *
 from ..validators import *
 from ..responses import *
+from ..pagination import *
 
 product_service = ProductService()
 category_service = CategoryService()
+
+@dataclass
+class GetCategoryRequest:
+    name : Optional[str] = None
 
 @api_view(["GET", "POST"])
 def categories(request):
 
     if request.method == "GET":
-        categories = category_service.get_all_categories()
-        serialized_categories = [serialize_catgeory(category) for category in categories] 
-        return success_response("categories",serialized_categories, 200)
+        get_category_request = GetCategoryRequest(
+            name = request.GET.get('name', None)
+        )
+        page = request.GET.get("page", 1)
+        sort_by=request.GET.get("sort_by","-updated_at")
+        sorted_categories = category_service.get_all_categories(get_category_request, sort_by)
+        categories=paginate_categories(request, sorted_categories, page)
+        return success_response(
+            "categories", categories, 200
+        )
     
     elif request.method == "POST":
         try:

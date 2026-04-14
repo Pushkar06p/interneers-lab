@@ -11,8 +11,8 @@ class CategoryService:
     def create_category(self, data):
         return self.category_repository.create(data)
 
-    def get_all_categories(self):
-        return self.category_repository.get_all()
+    def get_all_categories(self, get_category_request,sort_by):
+        return self.category_repository.get_all(get_category_request,sort_by)
 
     def get_category(self, category_id):
 

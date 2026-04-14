@@ -22,8 +22,8 @@ class ProductService:
 
     # ---------- READ ----------
 
-    def list_products(self, sort_by):
-        return self.product_repository.get_all(sort_by)
+    def list_products(self, sort_by, filters):
+        return self.product_repository.get_all(sort_by, filters)
 
     def get_product(self, product_id):
         self._validate_product_id(product_id)

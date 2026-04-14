@@ -1,5 +1,5 @@
 import datetime
-from mongoengine import Document, ReferenceField, StringField, FloatField, IntField, DateTimeField, NULLIFY
+from mongoengine import Document, ReferenceField, StringField, IntField, DateTimeField, NULLIFY
 
 
 class Category(Document):
@@ -20,7 +20,7 @@ class Product(Document):
     name=StringField(required=True)
     description=StringField()
     category = ReferenceField(Category,reverse_delete_rule=NULLIFY) # reverse_delete_rule=NULLIFY
-    price=FloatField(required=True)
+    price=IntField(required=True)
     brand=StringField(required=True)
     quantity=IntField(required=True)
     created_at = DateTimeField(default=datetime.datetime.now)
