@@ -1,8 +1,10 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { useReportCategories } from "../hooks/useReportCategories";
 import { useProducts } from "../hooks/useProducts";
 import { useCategories } from "../hooks/useCategories";
+
 import { ProductFilterState } from "../types/productFilter";
 
 const ReportPage: React.FC = () => {
@@ -26,7 +28,7 @@ const ReportPage: React.FC = () => {
   );
 
   const { products = [], loading: productsLoading } = useProducts(filters);
-  // console.log(products);
+
   const { categories = [], loading: categoriesLoading } =
     useCategories(undefined);
 
@@ -35,8 +37,10 @@ const ReportPage: React.FC = () => {
     products,
     categories,
   );
+
   const reportList =
     mode === "selected" ? selectedCategories : rejectedCategories;
+
   const loading = productsLoading || categoriesLoading;
 
   const handleClick = (categoryId?: string, type?: string) => {
@@ -73,6 +77,56 @@ const ReportPage: React.FC = () => {
     }
 
     navigate(`/products?${params.toString()}`);
+  };
+
+  const escapeCSV = (value: unknown) => {
+    return `"${String(value).replace(/"/g, '""')}"`;
+  };
+
+  const exportCSV = () => {
+    const headers = [
+      "Category",
+      "Total",
+      "High",
+      "Low",
+      "less than 1k",
+      "less than 10k",
+      "above 10k",
+    ];
+
+    const rows = reportList.map((item) => [
+      escapeCSV(item.name),
+      item.count,
+      item.gte_threshold,
+      item.lt_threshold,
+      item.lte_thousand,
+      item.lte_lakh,
+      item.gt_lakh,
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map((row) => row.join(","))
+      .join("\n");
+
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+
+    link.setAttribute("download", `${mode}_category_report.csv`);
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    window.URL.revokeObjectURL(url);
   };
 
   return (
@@ -129,7 +183,7 @@ const ReportPage: React.FC = () => {
           }}
         />
 
-        {/* Toggle Buttons */}
+        {/* Selected */}
         <button
           onClick={() => setMode("selected")}
           style={{
@@ -144,6 +198,7 @@ const ReportPage: React.FC = () => {
           Selected Categories
         </button>
 
+        {/* Rejected */}
         <button
           onClick={() => setMode("rejected")}
           style={{
@@ -156,6 +211,22 @@ const ReportPage: React.FC = () => {
           }}
         >
           Rejected Categories
+        </button>
+
+        {/* Export */}
+        <button
+          onClick={exportCSV}
+          style={{
+            padding: "8px 16px",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            background: "#059669",
+            color: "#fff",
+            marginLeft: "auto",
+          }}
+        >
+          Export CSV
         </button>
       </div>
 
@@ -175,7 +246,11 @@ const ReportPage: React.FC = () => {
             fontSize: "14px",
           }}
         >
-          <thead style={{ background: "#f8fafc" }}>
+          <thead
+            style={{
+              background: "#f8fafc",
+            }}
+          >
             <tr>
               {["Category", "Total", "High", "Low", "≤1k", "≤10k", "10k+"].map(
                 (h) => (
@@ -229,6 +304,7 @@ const ReportPage: React.FC = () => {
                     background: index % 2 === 0 ? "#ffffff" : "#f9fafb",
                   }}
                 >
+                  {/* Category */}
                   <td
                     onClick={() => handleClick(item.id)}
                     style={{
@@ -241,6 +317,7 @@ const ReportPage: React.FC = () => {
                     {item.name}
                   </td>
 
+                  {/* Total */}
                   <td
                     onClick={() => handleClick(item.id)}
                     style={{
@@ -251,6 +328,7 @@ const ReportPage: React.FC = () => {
                     {item.count}
                   </td>
 
+                  {/* High */}
                   <td
                     onClick={() => handleClick(item.id, "high")}
                     style={{
@@ -262,6 +340,7 @@ const ReportPage: React.FC = () => {
                     {item.gte_threshold}
                   </td>
 
+                  {/* Low */}
                   <td
                     onClick={() => handleClick(item.id, "low")}
                     style={{
@@ -273,6 +352,7 @@ const ReportPage: React.FC = () => {
                     {item.lt_threshold}
                   </td>
 
+                  {/* ≤1k */}
                   <td
                     onClick={() => handleClick(item.id, "lte1k")}
                     style={{
@@ -283,6 +363,7 @@ const ReportPage: React.FC = () => {
                     {item.lte_thousand}
                   </td>
 
+                  {/* ≤10k */}
                   <td
                     onClick={() => handleClick(item.id, "lte10k")}
                     style={{
@@ -293,6 +374,7 @@ const ReportPage: React.FC = () => {
                     {item.lte_lakh}
                   </td>
 
+                  {/* 10k+ */}
                   <td
                     onClick={() => handleClick(item.id, "gt10k")}
                     style={{
