@@ -10,4 +10,6 @@ export const ROUTES = {
   CATEGORY_CREATE: "/categories/create",
 
   CATEGORY_PRODUCTS: "/categories/products/:id",
+
+  REPORT: "/report",
 };

@@ -16,8 +16,10 @@ category_service = CategoryService()
 @dataclass
 class GetProductRequest:
     name: Optional[str] = None
-    min_price: Optional[str] = None
-    max_price: Optional[str] = None
+    min_price: Optional[int] = None
+    max_price: Optional[int] = None
+    min_quantity: Optional[int] = None
+    max_quantity: Optional[int] = None
     brand: Optional[str] = None
     category: Optional[str] = None
 
@@ -30,9 +32,17 @@ def products(request):
                 name = request.GET.get('name', None),
                 min_price = request.GET.get('min_price', None),
                 max_price = request.GET.get('max_price', None),
+                min_quantity = request.GET.get('min_quantity', None),
+                max_quantity = request.GET.get('max_quantity', None),
                 brand = request.GET.get('brand', None).split(',') if request.GET.get('brand', None) else None,
                 category = request.GET.get('category', None).split(',') if request.GET.get('category', None) else None
             )
+        all=request.GET.get('all', False)
+        if(all):
+            products = product_service.list_products(sort_by, filters)
+            products = [serialize_product(product) for product in products]
+            # print(products)
+            return success_response("products", products, 200)
         page = request.GET.get("page", 1)   
         sorted_products = product_service.list_products(sort_by, filters)
         products=paginate_products(request, sorted_products, page)

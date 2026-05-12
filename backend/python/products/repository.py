@@ -28,6 +28,12 @@ class ProductRepository:
         if filters.max_price:
             products = products.filter(price__lte=filters.max_price)
 
+        if filters.min_quantity:
+            products = products.filter(quantity__gte=filters.min_quantity)
+
+        if filters.max_quantity:
+            products = products.filter(quantity__lt=filters.max_quantity)
+    
         if filters.brand:
             products = products.filter(brand__in=filters.brand)
 

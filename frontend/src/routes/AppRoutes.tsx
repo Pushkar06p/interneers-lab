@@ -7,6 +7,7 @@ import CategoryCreationPage from "pages/CategoryCreationPage";
 import CategoryProductsPage from "pages/CategoryProductsPage";
 import ProductCreationPage from "pages/ProductCreationPage";
 import { ROUTES } from "./routePath";
+import ReportPage from "pages/ReportPage";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -24,6 +25,7 @@ const AppRoutes = () => {
         path={ROUTES.CATEGORY_PRODUCTS}
         element={<CategoryProductsPage />}
       />
+      <Route path={ROUTES.REPORT} element={<ReportPage />} />
     </Routes>
   );
 };

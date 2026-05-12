@@ -20,9 +20,12 @@ export const useProducts = (filters: any) => {
         page: currentPage,
         category: filters.category.join(","),
       });
-
-      setProducts(data.results);
-      setCount(data.count);
+      if (filters.all) {
+        setProducts(data.products);
+      } else {
+        setProducts(data.results);
+        setCount(data.count);
+      }
     } catch {
       setError("Failed to fetch products");
     } finally {
@@ -33,7 +36,7 @@ export const useProducts = (filters: any) => {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
-
+  // console.log(products);
   return {
     products,
     loading,

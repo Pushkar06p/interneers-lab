@@ -7,15 +7,19 @@ export interface ProductResponse {
   next: string | null;
   previous: string | null;
   results: Product[];
+  products: Product[];
 }
 export interface ProductFilters {
   page?: number;
   name?: string;
+  minQuantity?: number;
+  maxQuantity?: number;
   minPrice?: number;
   maxPrice?: number;
   category?: string[];
   brand?: string;
   sort_by?: string;
+  all?: boolean;
 }
 
 export const getProducts = async (
@@ -27,12 +31,16 @@ export const getProducts = async (
       name: filters.name,
       min_price: filters.minPrice,
       max_price: filters.maxPrice,
+      min_quantity: filters.minQuantity,
+      max_quantity: filters.maxQuantity,
       category: filters.category,
       brand: filters.brand,
       sort_by: filters.sort_by,
+      all: filters.all,
     },
   });
-
+  // console.log(response.data.products);
+  if (filters.all) return response.data;
   return response.data.products;
 };
 

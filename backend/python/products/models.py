@@ -31,5 +31,3 @@ class Product(Document):
         self.updated_at = datetime.datetime.now()
         return super().save(*args, **kwargs)
     
-    
-

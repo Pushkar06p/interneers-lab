@@ -1,5 +1,5 @@
 from bson import ObjectId
-from ..repository import ProductRepository, CategoryRepository
+from ..repository import  CategoryRepository
 from ..exceptions import *
 from ..validators import *
 
