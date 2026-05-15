@@ -1,31 +1,124 @@
 import { Routes, Route } from "react-router-dom";
+
 import ProductsPage from "../pages/ProductPage";
 import ProductDetailPage from "../pages/ProductDetailPage";
-import CategoryPage from "pages/CategoryPage";
+import ProductCreationPage from "../pages/ProductCreationPage";
+
+import CategoryPage from "../pages/CategoryPage";
 import CategoryDetailPage from "../pages/CategoryDetailPage";
-import CategoryCreationPage from "pages/CategoryCreationPage";
-import CategoryProductsPage from "pages/CategoryProductsPage";
-import ProductCreationPage from "pages/ProductCreationPage";
+import CategoryCreationPage from "../pages/CategoryCreationPage";
+import CategoryProductsPage from "../pages/CategoryProductsPage";
+
+import ReportPage from "../pages/ReportPage";
+import Dashboard from "../pages/Dashboard";
+import Login from "../pages/Login";
+
 import { ROUTES } from "./routePath";
-import ReportPage from "pages/ReportPage";
+
+import RoleProtectedRoute from "./RoleProtectedRoute";
+import CreateUser from "pages/CreateUser";
+
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path={ROUTES.HOME} element={<ProductsPage />} />
+      {/* PUBLIC ROUTES */}
+      <Route path={ROUTES.LOGIN} element={<Login />} />
 
-      <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
-      <Route path={ROUTES.PRODUCT_DETAIL} element={<ProductDetailPage />} />
-      <Route path={ROUTES.PRODUCT_CREATE} element={<ProductCreationPage />} />
+      {/* PROTECTED ROUTES */}
 
-      <Route path={ROUTES.CATEGORIES} element={<CategoryPage />} />
-      <Route path={ROUTES.CATEGORY_DETAIL} element={<CategoryDetailPage />} />
-      <Route path={ROUTES.CATEGORY_CREATE} element={<CategoryCreationPage />} />
+      <Route
+        path="/users/create"
+        element={
+          <RoleProtectedRoute allowedRoles={["admin", "manager"]}>
+            <CreateUser />
+          </RoleProtectedRoute>
+        }
+      />
+
+      {/* DASHBOARD */}
+      <Route
+        path={ROUTES.HOME}
+        element={
+          <RoleProtectedRoute allowedRoles={["admin", "manager", "employee"]}>
+            <Dashboard />
+          </RoleProtectedRoute>
+        }
+      />
+
+      {/* PRODUCTS */}
+      <Route
+        path={ROUTES.PRODUCTS}
+        element={
+          <RoleProtectedRoute allowedRoles={["admin", "manager", "employee"]}>
+            <ProductsPage />
+          </RoleProtectedRoute>
+        }
+      />
+
+      <Route
+        path={ROUTES.PRODUCT_DETAIL}
+        element={
+          <RoleProtectedRoute allowedRoles={["admin", "manager", "employee"]}>
+            <ProductDetailPage />
+          </RoleProtectedRoute>
+        }
+      />
+
+      <Route
+        path={ROUTES.PRODUCT_CREATE}
+        element={
+          <RoleProtectedRoute allowedRoles={["admin", "manager"]}>
+            <ProductCreationPage />
+          </RoleProtectedRoute>
+        }
+      />
+
+      {/* CATEGORIES */}
+      <Route
+        path={ROUTES.CATEGORIES}
+        element={
+          <RoleProtectedRoute allowedRoles={["admin", "manager", "employee"]}>
+            <CategoryPage />
+          </RoleProtectedRoute>
+        }
+      />
+
+      <Route
+        path={ROUTES.CATEGORY_DETAIL}
+        element={
+          <RoleProtectedRoute allowedRoles={["admin", "manager", "employee"]}>
+            <CategoryDetailPage />
+          </RoleProtectedRoute>
+        }
+      />
+
+      <Route
+        path={ROUTES.CATEGORY_CREATE}
+        element={
+          <RoleProtectedRoute allowedRoles={["admin", "manager"]}>
+            <CategoryCreationPage />
+          </RoleProtectedRoute>
+        }
+      />
 
       <Route
         path={ROUTES.CATEGORY_PRODUCTS}
-        element={<CategoryProductsPage />}
+        element={
+          <RoleProtectedRoute allowedRoles={["admin", "manager", "employee"]}>
+            <CategoryProductsPage />
+          </RoleProtectedRoute>
+        }
       />
-      <Route path={ROUTES.REPORT} element={<ReportPage />} />
+
+      {/* REPORTS */}
+      <Route
+        path={ROUTES.REPORT}
+        element={
+          <RoleProtectedRoute allowedRoles={["admin", "manager"]}>
+            <ReportPage />
+          </RoleProtectedRoute>
+        }
+      />
     </Routes>
   );
 };
