@@ -5,6 +5,7 @@ urlpatterns = [
     path("products/", product.products, name="products"),
     # GET  -> list products
     # POST -> create product
+    path("products/import-csv/", product.import_products_csv, name="import_csv"),
 
     path("products/<str:product_id>/", product.product_detail, name="product_detail"),
     # GET    -> get product
@@ -12,6 +13,7 @@ urlpatterns = [
     # PATCH  -> partial update
     # DELETE -> delete product
 
+    
 ]
 
 urlpatterns += [

@@ -96,6 +96,10 @@ class CategoryRepository:
     def update(category):
         category.save()
         return category
+    @staticmethod
+    def get_by_name(name):
+        category = Category.objects(name__iexact=name).first()
+        return category
 
     @staticmethod
     def delete(category_id):

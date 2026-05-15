@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "products",
+    "accounts",
 ]
 
 MIDDLEWARE = [
@@ -135,7 +136,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 
-from mongoengine import connect
 
 from mongoengine import connect
 
@@ -143,3 +143,18 @@ connect(
     db="product_db",
     host="mongodb://root:example@localhost:27019/product_db?authSource=admin"
 )
+
+REST_FRAMEWORK = {
+
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+
+        "accounts.authentication.jwt_authentication.JWTAuthentication",
+
+    ),
+
+    "DEFAULT_PERMISSION_CLASSES": (
+
+        "rest_framework.permissions.IsAuthenticated",
+
+    )
+}

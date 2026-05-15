@@ -51,3 +51,12 @@ class CategoryNotFound(CategoryError):
         else:
             message += f" Category ID: None"
         super().__init__(message, status_code=404)
+
+class CategoryNameNotFound(CategoryError):
+    def __init__(self, category_name):
+        message = f"Category name not found ."
+        if category_name:
+            message += f" Category name: {category_name}"
+        else:
+            message += f" Category name: None"
+        super().__init__(message, status_code=404)

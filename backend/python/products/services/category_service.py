@@ -25,6 +25,13 @@ class CategoryService:
             raise CategoryNotFound(category_id=category_id)
 
         return category
+    
+    def get_category_by_name(self, name):
+        category = self.category_repository.get_by_name(name)
+        if not category:
+            raise CategoryNameNotFound(category_name=name)
+
+        return category
 
     def update_category(self, category_id, data, fields_required=True):
 
