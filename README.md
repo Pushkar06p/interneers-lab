@@ -1,157 +1,173 @@
-# Product Service & Product Category API
+# End-to-End Features
 
-This repository contains backend services for managing **Products** and **Product Categories**.
-The project includes APIs, service layers, unit tests, integration tests, and automated development workflows using a **Makefile**.
+The system includes advanced reporting, navigation, CSV operations, authentication workflows, and inventory monitoring features.
 
 ---
 
-## Project Structure
-```
-├── backend/
-│   ├── python/
-│   │   ├── django_app/
-│   │   ├── htmlcov/
-│   │   ├── product_service/
-│   │   ├── product_category/
-│   │   ├── warehouse/
-│   │   ├── docker-compose.yaml
-│   │   ├── pytest.ini
-│   │   └── requirements.txt
-|   |
-│   └── go/
-│
-├── frontend/
-│
-├── Makefile
-├── README.md
-└── CHANGELOG.md
-```
+# Reporting Features
+
+The application provides multiple inventory reporting capabilities for business insights and stock analysis.
+
+## 1. Category-wise Product Count Report
+
+Generate reports showing:
+- Total number of products in each category
+- Filtering by product count ranges
+- Ignore categories outside selected thresholds
+
+### Example
+- Show categories having:
+  - More than 10 products
+  - Between 5–20 products
+  - Less than 5 products
+
 ---
+
+## 2. Price Range Based Product Report
+
+Generate reports for products grouped into predefined price ranges within each category.
+
+### Example Price Segments
+- ₹0 – ₹1000
+- ₹1001 – ₹100000
+- Above ₹10000
+
+The report displays:
+- Number of products in each range
+- Category-wise segmentation
+- Inventory distribution analysis
+
+---
+
+## 3. Low Stock Reports
+
+The system supports inventory monitoring through low-stock analysis.
+
+### Features
+- Generate list of products below a configurable stock threshold
+- Identify categories where more than 10% of products are running low
+- Inventory shortage tracking
+
+### Example
+- Products with quantity < 10
+- Categories with critical stock levels
+
+---
+
+# Navigation Controls
+
+The frontend supports dynamic navigation between reports and product details.
 
 ## Features
-
-* Product CRUD APIs
-* Product Category APIs
-* Service layer abstraction
-* Unit and integration tests
-* Test coverage reporting
-* Automated development commands using Makefile
+- Clicking a product in reports navigates to dedicated product detail pages
+- Products can also open inside expandable sub-sections
+- Smooth routing using React Router
+- Role-based protected routes
 
 ---
 
-## Prerequisites
+# CSV Features
 
-Before running the project ensure the following are installed:
+## CSV Import
+Supports bulk product insertion through CSV upload.
 
-* Python 3.10+
-* pip
-* Node.js (for frontend)
-* Yarn
-* Make
+### Workflow
+```text
+CSV Upload
+    ↓
+Backend Validation
+    ↓
+Bulk Processing
+    ↓
+MongoDB Storage
+```
+
+### Features
+- Bulk product creation
+- CSV validation
+- Error handling for invalid rows
 
 ---
 
-## Setup Instructions
-
-Clone the repository:
-
-```bash
-git clone <repository-url>
-cd interneers-lab
-```
-
-Create virtual environment and install dependencies:
-
-```bash
-make setup
-```
-
-This command will:
-
-* Create a Python virtual environment
-* Install backend dependencies
-* Install frontend dependencies
+## CSV Export
+Generate downloadable CSV reports for:
+- Product inventory
+- Category reports
+- Low stock reports
+- Price range reports
 
 ---
 
-## Running the Backend
+# Logging System
 
-Start the backend server:
+The application includes backend logging for monitoring and debugging.
 
-```bash
-make backend
-```
-
----
-
-## Running the Frontend
-
-Start the frontend application:
-
-```bash
-make frontend
-```
+## Logging Features
+- API request logging
+- Error logging
+- Authentication activity tracking
+- CSV import/export activity logs
 
 ---
 
-## Running Tests
+# Authentication Features
 
-Execute all tests:
-
-```bash
-make test
-```
-
-This will run **pytest test suites** including unit tests.
+## Login & Logout
+- Secure token-based authentication
+- Protected API routes
+- Session handling
+- Logout functionality
 
 ---
 
-## Running Tests with Coverage
+# Role-Based Access Control
 
-Generate test coverage:
+## Admin
+- Full CRUD operations
+- Create managers and employees
+- Generate all reports
+- Access analytics
 
-```bash
-make coverage
-```
+## Manager
+- Manage products/categories
+- View reports
+- Restricted administrative access
 
-Example output:
-
-```
----------- coverage ----------
-Name                              Stmts   Miss  Cover
-----------------------------------------------
-product_service/service.py         45      3    93%
-product_category/service.py        30      2    93%
-----------------------------------------------
-TOTAL                              75      5    93%
-```
+## Employee
+- Read-only product access
+- Search and filtering
+- Restricted dashboard access
 
 ---
 
-## Development Workflow
+# Approach Note
 
-Typical development workflow:
+The reporting system is based on CSR pattern.
 
-```bash
-make setup
-make test
-make coverage
+
+# Workflow Integration
+
+```text
+React Frontend
+       ↓
+Report APIs
+       ↓
+Controller Layer
+       ↓
+Service Layer
+       ↓
+Repository Layer
+       ↓
+MongoDB Aggregation Queries
 ```
 
 ---
 
-## Testing Overview
+# Benefits of Implementation
 
-The project includes:
-
-### Unit Tests
-
-* Test service layer logic
-* Mock repository layers
-
-### Integration Tests
-
-* Validate API endpoints
-* Test full request-response flow
-
-Integration tests may require additional services (e.g. MongoDB) and may be skipped if dependencies are unavailable.
+- Modular architecture
+- Reusable report services
+- Scalable reporting system
+- Clean separation of concerns
+- Efficient MongoDB aggregation handling
+- Easy future extension for analytics
